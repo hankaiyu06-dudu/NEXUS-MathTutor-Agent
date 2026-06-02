@@ -21,21 +21,32 @@ Traditional exercise books are static dead-ends. NEXUS envisions a paradigm shif
 
 ## 3. System Architecture
 NEXUS operates on a dual-track loop: LLM inference for natural language understanding, and a deterministic tensor engine for state tracking.
-
 ```text
-    [User Solution]
-           │
-           ▼
- [Gemma-4 Evaluator] ───(JSON: Score & Status)───┐
-           │                                     │
-      (Feedback)                                 ▼
-           │                        [Cognitive Tensor Engine]
-           │                          ├─ Update Node Mastery
-           │                          ├─ Propagate State in DAG
-           ▼                          └─ Detect Weak Concepts
-    [Tutor Output]                               │
-           ▲                                     │
-           └──────(Targeted Micro-problem)───────┘
+┌───────────────────────────────────────────────────────────────────┐
+│                 MACRO LOOP: KNOWLEDGE NAVIGATION                  │
+│                                                                   │
+│  [Cognitive Tensor] ───────(Yields Candidate Pool)─────────────┐  │
+│  ▶ Calculates DAG readiness                                    │  │
+│  ▲                                                             ▼  │
+│  │                                                     [Gemma-4]  │
+│  │                                             ▶ Selects best task│
+│  │(JSON Score Triggers Update)                                 │  │
+│  │                                                             ▼  │
+│  [Gemma-4 Evaluator] ◀──────(Evaluates Logic)──────── [User Input]│
+│                                                                   │
+└────────────────────────────────┬──────────────────────────────────┘
+                                 │
+                         (If Mastery is Low)
+                     Tensor Extracts Weak Nodes
+                                 │
+┌────────────────────────────────▼──────────────────────────────────┐
+│                 MICRO LOOP: SOCRATIC SCAFFOLDING                  │
+│                                                                   │
+│  [Gemma-4 Tutor] ───────────(Generates Micro-Problem)──────────┐  │
+│  ▶ Injects weak nodes as context                               │  │
+│  ▶ Prompts heuristic hints (No direct answers)                 ▼  │
+│                                                         [User UI] │
+└───────────────────────────────────────────────────────────────────┘
 ```
 
 ## 4. Implementation: The 3D Cognitive Tensor
