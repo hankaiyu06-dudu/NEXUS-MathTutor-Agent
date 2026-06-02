@@ -22,8 +22,8 @@ Traditional exercise books are static dead-ends. NEXUS envisions a paradigm shif
 ## 3. System Architecture
 NEXUS operates on a dual-track loop: LLM inference for natural language understanding, and a deterministic tensor engine for state tracking.
 
-'''
-[User Solution]
+```text
+    [User Solution]
            │
            ▼
  [Gemma-4 Evaluator] ───(JSON: Score & Status)───┐
@@ -36,7 +36,7 @@ NEXUS operates on a dual-track loop: LLM inference for natural language understa
     [Tutor Output]                               │
            ▲                                     │
            └──────(Targeted Micro-problem)───────┘
-'''
+```
 
 ## 4. Implementation: The 3D Cognitive Tensor
 We avoid traditional relational databases for student progress. Instead, the cognitive state is modeled natively in PyTorch as a 3D Tensor `shape=(N, N, 3)`, where `N` is the total number of concepts/nodes.
