@@ -13,7 +13,7 @@ Walter Rudin's *Principles of Mathematical Analysis* is widely regarded as a mas
 
 Human tutors solve this problem naturally. They remember what the learner knows, identify missing prerequisites, and decide which idea should come next.
 
-Large Language Models promise to scale this experience, but conversational systems face a fundamental engineering limitation: **context is not cognition**. Over long learning trajectories, an AI gradually loses access to historical struggles, prerequisite mastery, and curriculum structure.
+Large Language Models promise to scale this experience, but conversational systems face a fundamental engineering limitation: a practical form of **"context amnesia"**. Over long learning trajectories, an AI gradually loses access to historical struggles, prerequisite mastery, and curriculum structure.
 
 NEXUS explores a different paradigm.
 
@@ -21,7 +21,7 @@ Instead of organizing educational content as linear pages, we represent it as a 
 
 We view NEXUS not merely as an application, but as a potential medium for educational content. In this medium, learning becomes a process of navigating and constructing conceptual connections rather than consuming a fixed sequence of pages.
 
-Our architectural philosophy is inspired by Terence Tao's minimalist approach in *Math 245A: Problem Solving Strategies* and the observation that mathematical understanding emerges from relationships between ideas. Rather than treating educational content as unstructured data dumps within a massive vector database (RAG), NEXUS emphasizes explicit topology, interpretable dependencies, and guided progression through a structured concept graph. We ensure that mathematical growth happens exactly where it should: in the cognitive sparks when a student successfully connects disparate ideas.
+Our architectural philosophy is inspired by problem-solving-oriented mathematics instruction and the observation that mathematical understanding emerges from relationships between ideas. Rather than relying solely on retrieval from unstructured document collections, NEXUS emphasizes explicit topology, interpretable dependencies, and graph-guided progression. We ensure that mathematical growth happens exactly where it should: in the cognitive sparks when a student successfully connects disparate ideas.
 
 ---
 
@@ -94,7 +94,7 @@ Rather than revealing the solution, the tutor generates a targeted intervention 
 
 ## 4. System Architecture
 
-NEXUS operates on two coupled loops. The tensor engine maintains the long-term educational memory, while the language models read from and write to this state.
+NEXUS operates on two coupled loops. The tensor engine maintains learner state, while language models interact with and update that state.
 
 ```text
 ┌───────────────────────────────────────────────────────────────────┐
@@ -103,11 +103,11 @@ NEXUS operates on two coupled loops. The tensor engine maintains the long-term e
 │  [Cognitive Tensor] ───────(Yields Candidate Pool)─────────────┐  │
 │  ▶ Calculates DAG readiness                                    │  │
 │  ▲                                                             ▼  │
-│  │                                                     [Gemma-4]  │
+│  │                                                 [LLM Agent]    │
 │  │                                             ▶ Selects best task│
 │  │(JSON Score Triggers Update)                                 │  │
 │  │                                                             ▼  │
-│  [Gemma-4 Evaluator] ◀──────(Evaluates Logic)──────── [User Input]│
+│  [Evaluator Agent] ◀────────(Evaluates Logic)──────── [User Input]│
 │                                                                   │
 └────────────────────────────────┬──────────────────────────────────┘
                                  │
@@ -117,7 +117,7 @@ NEXUS operates on two coupled loops. The tensor engine maintains the long-term e
 ┌────────────────────────────────▼──────────────────────────────────┐
 │                 MICRO LOOP: SOCRATIC SCAFFOLDING                  │
 │                                                                   │
-│  [Gemma-4 Tutor] ───────────(Generates Micro-Problem)──────────┐  │
+│  [Tutor Agent] ─────────────(Generates Micro-Problem)──────────┐  │
 │  ▶ Injects weak nodes as context                               │  │
 │  ▶ Prompts heuristic hints (No direct answers)                 ▼  │
 │                                                         [User UI] │
@@ -147,10 +147,11 @@ The tensor contains three layers:
 ### Topological Compression
 A naive adjacency matrix requires $O(N^2)$ storage. In practice, foundational tools connect to exercises, but tools rarely depend on tools and exercises rarely depend directly on exercises. 
 
-By exploiting this bipartite structure, NEXUS compresses the topology into a dense $k \times N$ representation, reducing spatial complexity to $O(kN)$ while preserving prerequisite information.
+By exploiting this bipartite structure, NEXUS compresses the topology into a dense $k \times N$ representation, reducing spatial complexity to $O(kN)$ while preserving prerequisite information. Since $k \ll N$ in typical curricula, this substantially reduces memory requirements compared with a full adjacency matrix.
 
 ### Readiness Computation
-For a candidate exercise:
+For a candidate exercise, a simplified readiness estimate is computed as the dot product between a problem's dependency vector and the learner's mastery vector:
+
 $$\text{Readiness Score} = \text{Dependency Vector} \cdot \text{Mastery Vector}$$
 
 This computation is performed directly in GPU memory and provides a fast estimate of whether a problem lies within the learner’s current zone of productive challenge.
@@ -178,7 +179,7 @@ NEXUS can therefore be viewed as a complementary perspective on learner modeling
 **Implemented**
 * Cognitive tensor engine with $O(kN)$ topology compression
 * Knowledge graph propagation framework
-* Gemma-based soft-grading evaluator
+* LLM-based soft-grading evaluator
 * Socratic tutoring workflow
 * Local Gradio interface
 * Structured JSON extraction pipeline
@@ -219,22 +220,21 @@ Language models are exceptionally effective at explanation, dialogue, and guidan
 
 ## 10. Quick Start
 
-**Installation**
+NEXUS is actively developed and executed within Kaggle's GPU-accelerated Jupyter environment.
+
+**1. Clone the Repository**
 ```bash
 git clone [https://github.com/your-username/NEXUS-Math-Agent.git](https://github.com/your-username/NEXUS-Math-Agent.git)
-cd NEXUS-Math-Agent
-pip install -r requirements.txt
 ```
 
-**Run**
-```bash
-python app.py
-```
+**2. Kaggle Environment Setup**
+* Upload the core Jupyter Notebook (`notebook8ddf0490c5.ipynb`) to a new Kaggle Notebook.
+* Upload the knowledge database (`nexus_db.json`) to the Kaggle `/kaggle/input/` or `/kaggle/working/` directory.
 
-**Hardware Requirements**
-* NVIDIA GPU recommended
-* 16 GB VRAM for local inference
-* NF4 4-bit quantization via BitsAndBytes for memory-efficient deployment
+**3. Execution**
+* Ensure your Kaggle session has a GPU enabled (e.g., NVIDIA T4 x2 or P100).
+* Run the cells sequentially to boot the cognitive tensor engine and launch the local Gradio interface. 
+* *Note: The system utilizes NF4 4-bit dynamic quantization to fit large parameter language models securely within Kaggle's VRAM constraints.*
 
 ---
 
