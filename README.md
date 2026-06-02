@@ -224,7 +224,7 @@ NEXUS is actively developed and executed within Kaggle's GPU-accelerated Jupyter
 
 **1. Clone the Repository**
 ```bash
-git clone [https://github.com/your-username/NEXUS-Math-Agent.git](https://github.com/your-username/NEXUS-Math-Agent.git)
+git clone  https://github.com/hankaiyu06-dudu/NEXUS-MathTutor-Agent.git
 ```
 
 **2. Kaggle Environment Setup**
