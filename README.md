@@ -1,71 +1,64 @@
 # NEXUS: Separating Educational Memory from Language Models for AI Tutoring
 
-> **LLM ≠ Memory**
-> NEXUS externalizes learner cognition into an interpretable graph-based state engine, enabling long-term educational memory beyond the context window.
-
-NEXUS is an AI tutoring architecture for mathematics education that models learning not as conversational history, but as a dynamic state evolving on a knowledge graph. Rather than relying on the language model to remember the learner, NEXUS maintains an explicit cognitive state that persists across exercises, sessions, and learning trajectories.
+> **LLM ≠ Memory | LLM ≠ Curriculum**
+> NEXUS does not ask the language model to remember either the student or the curriculum. Both are externalized and retrieved at inference time, enabling an interpretable, long-term educational architecture beyond the context window.
 
 ---
 
 ## 1. Vision: A New Topological Medium
 
-Walter Rudin's *Principles of Mathematical Analysis* is widely regarded as a masterpiece of mathematical exposition. Yet for many students encountering rigorous mathematics for the first time, it can be overwhelming. A textbook, no matter how elegant, remains fundamentally static: a student struggling with continuity and a student struggling with compactness receive the same page, in the same order, regardless of their individual needs.
+Walter Rudin's *Principles of Mathematical Analysis* is a masterpiece, yet for many students encountering rigorous mathematics for the first time, a static textbook can be overwhelming. A student struggling with continuity and a student struggling with compactness receive the same page, in the same order. 
 
-Human tutors solve this problem naturally. They remember what the learner knows, identify missing prerequisites, and decide which idea should come next.
+Human tutors solve this naturally by remembering the learner's state and adapting the curriculum. While Large Language Models promise to scale this experience, they face a practical form of **"context amnesia"**. Over long learning trajectories, an AI gradually loses access to historical struggles, prerequisite mastery, and curriculum structure.
 
-Large Language Models promise to scale this experience, but conversational systems face a fundamental engineering limitation: a practical form of **"context amnesia"**. Over long learning trajectories, an AI gradually loses access to historical struggles, prerequisite mastery, and curriculum structure.
-
-NEXUS explores a different paradigm.
-
-Instead of organizing educational content as linear pages, we represent it as a navigable graph of mathematical ideas. The graph serves as a persistent representation of curriculum structure, while the AI tutor acts as an adaptive guide through that space.
-
-We view NEXUS not merely as an application, but as a potential medium for educational content. In this medium, learning becomes a process of navigating and constructing conceptual connections rather than consuming a fixed sequence of pages.
-
-Our architectural philosophy is inspired by problem-solving-oriented mathematics instruction and the observation that mathematical understanding emerges from relationships between ideas. Rather than relying solely on retrieval from unstructured document collections, NEXUS emphasizes explicit topology, interpretable dependencies, and graph-guided progression. We ensure that mathematical growth happens exactly where it should: in the cognitive sparks when a student successfully connects disparate ideas.
+NEXUS explores a different paradigm. Inspired by problem-solving-oriented mathematics instruction, we transform static educational content into a navigable graph of mathematical ideas. In this medium, learning becomes a process of constructing conceptual connections, guided by an AI that explicitly tracks cognitive states.
 
 ---
 
-## 2. Research Motivation & Core Hypothesis
+## 2. Core Architecture: Externalized Knowledge & State
 
-Current AI tutors often rely primarily on conversational context.
+Current AI tutors often rely on the LLM's internal parameters to store both pedagogical knowledge and conversational history. NEXUS strictly separates these concerns into a tripartite architecture:
 
-While effective for short interactions, such systems generally lack an explicit representation of:
-* prerequisite relationships,
-* concept dependencies,
-* long-term mastery evolution,
-* curriculum topology.
+* **Tensor Engine (Student Memory):** Tracks dynamic mastery. *Determines WHAT the student needs.*
+* **Skill Notes Repository (Domain Knowledge):** Stores canonical solutions, prerequisite concepts, and Socratic hints. *Determines WHAT should be taught.*
+* **LLM Agent (Reasoning Layer):** Operates over the retrieved context to generate dialogue and evaluates student logic. *Determines HOW to teach it.*
 
-NEXUS separates two distinct responsibilities:
-* **Cognitive State Tracking** — deterministic tensor engine
-* **Natural Language Interaction** — LLM-based agent
+```text
+                 ┌──────────────────────┐
+              ┌─▶│   Cognitive Tensor   │ (Calculates Readiness & Weak Nodes)
+              │  └──────────┬───────────┘
+              │             │
+              │   Select Weak Concepts
+  Evaluates   │             │
+   Logic &    │             ▼
+   Updates    │  ┌──────────────────────┐
+    State     │  │   Skill Notes Repo   │ (Retrieves Concept Explanations)
+              │  └──────────┬───────────┘
+              │             │
+              │   Inject Context & Hints
+              │             │
+              │             ▼
+              │  ┌──────────────────────┐
+              └──┤   LLM Tutor Agent    │ (Generates Dialogue & Evaluates)
+                 └──────────────────────┘
+```
 
-The central hypothesis is:
-> Educational memory should be maintained explicitly as a structured cognitive state, while language models should focus on interpretation, feedback, and interaction.
-
-This separation aims to provide greater interpretability, consistency, and pedagogical control than approaches that rely exclusively on neural memory mechanisms.
-
-### Research Positioning
-NEXUS does not attempt to replace neural memory systems. Instead, it investigates whether an explicit graph-based cognitive state layer can complement language models by providing a transparent and persistent representation of learner understanding.
+Consequently, the language model is not required to memorize the curriculum or the student's history. It acts purely as an adaptive reasoning layer operating over externally stored educational knowledge, continually evaluating logic and feeding updates back into the cognitive state.
 
 ---
 
 ## 3. Example State Evolution
-*Illustrative example of cognitive-state propagation.*
 
-### Student Response
-> "The derivative is $f'(x)=3x^2-6x+a$. Since $x=1$ is a minimum, $a=3$."
+*How NEXUS processes a conceptual error and propagates the cognitive state.*
 
-The student correctly determines the parameter value but fails to analyze the derivative sign structure required for monotonicity.
+**Student Response:**
+> "The derivative is $f'(x)=3x^2-6x+a$. Since $x=1$ is a minimum, $a=3$." *(Fails to analyze the sign structure for monotonicity).*
 
-### Evaluator Output
-**Correct**
-* Derivative computation
-* Critical-point condition
+**Evaluator Output:**
+> [x] Correct: Derivative computation, Critical-point condition
+> [ ] Incorrect: Quadratic sign analysis
 
-**Incorrect**
-* Quadratic sign analysis
-
-### Tensor State Update
+**Tensor State Update & Propagation:**
 ```text
 [Mastery Before]
 Derivative Calculation      0.92
@@ -73,162 +66,66 @@ Critical Points             0.81
 Quadratic Signs             0.62
 
 [Direct Update]
-Derivative Calculation      0.96 (+0.04)
-Critical Points             0.87 (+0.06)
-Quadratic Signs             0.38 (-0.24)
-
-Weak Node Detected:
-Quadratic Signs
+Quadratic Signs             0.38 (-0.24)  <-- Weak Node Detected
 
 [Propagation Through DAG]
 Monotonicity Analysis       0.54 → 0.43
 Optimization Problems       0.71 → 0.65
 ```
 
-### Tutor Response
+**Tutor Response (Prompted by retrieved Skill Notes):**
 > "You correctly found $a=3$. Now graph $f'(x)=3(x-1)^2$. Is the derivative ever negative? What does a derivative that is always nonnegative imply about monotonicity?"
 
-Rather than revealing the solution, the tutor generates a targeted intervention centered on the detected weak concept.
-
 ---
 
-## 4. System Architecture
+## 4. Implementation: The $k \times N \times 3$ Cognitive Tensor
 
-NEXUS operates on two coupled loops. The tensor engine maintains learner state, while language models interact with and update that state.
+NEXUS represents curriculum structure and learner state using a PyTorch tensor of shape $k \times N \times 3$ ($k$ foundational tools, $N$ total cognitive nodes), containing three layers:
+1. **Layer 0 (Topological Dependencies):** A compressed prerequisite matrix.
+2. **Layer 1 (Static Difficulty):** Intrinsic logical complexity.
+3. **Layer 2 (Dynamic Mastery):** Continuously updated learner proficiency.
 
-```text
-┌───────────────────────────────────────────────────────────────────┐
-│                 MACRO LOOP: KNOWLEDGE NAVIGATION                  │
-│                                                                   │
-│  [Cognitive Tensor] ───────(Yields Candidate Pool)─────────────┐  │
-│  ▶ Calculates DAG readiness                                    │  │
-│  ▲                                                             ▼  │
-│  │                                                 [LLM Agent]    │
-│  │                                             ▶ Selects best task│
-│  │(JSON Score Triggers Update)                                 │  │
-│  │                                                             ▼  │
-│  [Evaluator Agent] ◀────────(Evaluates Logic)──────── [User Input]│
-│                                                                   │
-└────────────────────────────────┬──────────────────────────────────┘
-                                 │
-                         (If Mastery is Low)
-                     Tensor Extracts Weak Nodes
-                                 │
-┌────────────────────────────────▼──────────────────────────────────┐
-│                 MICRO LOOP: SOCRATIC SCAFFOLDING                  │
-│                                                                   │
-│  [Tutor Agent] ─────────────(Generates Micro-Problem)──────────┐  │
-│  ▶ Injects weak nodes as context                               │  │
-│  ▶ Prompts heuristic hints (No direct answers)                 ▼  │
-│                                                         [User UI] │
-└───────────────────────────────────────────────────────────────────┘
-```
+**Topological Compression:** By exploiting the bipartite structure of curricula (tools connect to exercises, rarely tool-to-tool), NEXUS compresses the topology into a dense $k \times N$ representation. Since $k \ll N$ in typical curricula, this substantially reduces memory requirements compared with a full adjacency matrix, dropping spatial complexity to $O(kN)$.
 
-* **Macro Loop:** Determines *what* should be learned next by navigating the curriculum graph.
-* **Micro Loop:** Determines *how* it should be learned by generating scaffolded interventions for weak nodes.
-
----
-
-## 5. Implementation: The $k \times N \times 3$ Cognitive Tensor
-
-NEXUS represents curriculum structure and learner state using a PyTorch tensor of shape:
-
-$$k \times N \times 3$$
-
-where:
-* $k$ = number of foundational mathematical tools
-* $N$ = total number of cognitive nodes
-
-The tensor contains three layers:
-* **Layer 0 — Topological Dependencies:** A compressed prerequisite matrix encoding how strongly node $j$ depends on tool $i$.
-* **Layer 1 — Static Difficulty:** The intrinsic logical or algebraic complexity associated with each node.
-* **Layer 2 — Dynamic Mastery:** A continuously updated estimate of learner proficiency across foundational tools.
-
-### Topological Compression
-A naive adjacency matrix requires $O(N^2)$ storage. In practice, foundational tools connect to exercises, but tools rarely depend on tools and exercises rarely depend directly on exercises. 
-
-By exploiting this bipartite structure, NEXUS compresses the topology into a dense $k \times N$ representation, reducing spatial complexity to $O(kN)$ while preserving prerequisite information. Since $k \ll N$ in typical curricula, this substantially reduces memory requirements compared with a full adjacency matrix.
-
-### Readiness Computation
-For a candidate exercise, a simplified readiness estimate is computed as the dot product between a problem's dependency vector and the learner's mastery vector:
-
+**Readiness Computation:** A simplified readiness estimate is computed directly in GPU memory as the dot product between a problem's dependency vector and the learner's mastery vector:
 $$\text{Readiness Score} = \text{Dependency Vector} \cdot \text{Mastery Vector}$$
 
-This computation is performed directly in GPU memory and provides a fast estimate of whether a problem lies within the learner’s current zone of productive challenge.
+---
+
+## 5. Relation to Knowledge Tracing
+
+Unlike traditional Knowledge Tracing (e.g., BKT, DKT) that estimates mastery through probabilistic or learned latent representations, NEXUS maintains an explicit graph-structured cognitive model and performs deterministic propagation. 
+
+The goal is not necessarily superior predictive accuracy, but rather **interpretability, transparency, and curriculum-aware reasoning**, serving as a complementary perspective on learner modeling.
 
 ---
 
-## 6. Relation to Knowledge Tracing
+## 6. Current Status & Future Directions
 
-Traditional Knowledge Tracing methods, including Bayesian Knowledge Tracing (BKT) and Deep Knowledge Tracing (DKT), estimate mastery through probabilistic or learned latent representations.
+**Implemented:**
+* $O(kN)$ Cognitive tensor engine & Knowledge graph propagation.
+* Externalized Skill Notes retrieval pipeline.
+* LLM-based soft-grading evaluator & Socratic tutoring workflow.
+* Kaggle-optimized local Gradio interface.
 
-NEXUS takes a different approach. Instead of learning a hidden representation of student state, it maintains an explicit graph-structured cognitive model and performs deterministic propagation over prerequisite relationships. 
-
-The goal is not necessarily superior predictive performance, but rather:
-* interpretability,
-* transparency,
-* controllability,
-* curriculum-aware reasoning.
-
-NEXUS can therefore be viewed as a complementary perspective on learner modeling rather than a replacement for existing KT methods.
-
----
-
-## 7. Current Status
-
-**Implemented**
-* Cognitive tensor engine with $O(kN)$ topology compression
-* Knowledge graph propagation framework
-* LLM-based soft-grading evaluator
-* Socratic tutoring workflow
-* Local Gradio interface
-* Structured JSON extraction pipeline
-
-**In Progress**
-* Large-scale problem-bank integration
-* Automated graph construction from mathematical resources
-* Empirical comparison against KT baselines
-* Visualization tools for cognitive-state evolution
-
----
-
-## 8. Future Directions
-
-Potential future research directions include:
-* **Hybrid Cognitive Models:** Combining deterministic state propagation with learned student models.
+**Future Directions:**
+* **Hybrid Cognitive Models:** Combining deterministic propagation with learned student models.
+* **Automated Curriculum Extraction:** Building concept graphs and Skill Notes directly from textbooks.
 * **Adaptive Graph Rewiring:** Updating prerequisite structures based on aggregate learner behavior.
-* **Multi-Agent Tutoring Systems:** Specialized agents for hint generation, verification, planning, and peer-style interaction.
-* **Automatic Curriculum Extraction:** Building concept graphs directly from textbooks, lecture notes, and problem collections.
 
 ---
 
-## 9. Design Philosophy
-
-NEXUS is built around a simple observation:
-**Learning is not the accumulation of isolated facts. It is the gradual construction of connections between ideas.**
-
-Traditional educational resources are organized as linear sequences of pages. Human tutors, however, rarely teach linearly. They continuously assess prerequisite understanding, identify conceptual gaps, and decide which connection should be built next. NEXUS attempts to externalize this process.
-
-Instead of treating educational memory as conversational history, it represents learner state explicitly within a graph-structured cognitive model. The knowledge graph provides the curriculum topology, the tensor engine maintains long-term educational memory, and the language model serves as an adaptive interface between the learner and the graph.
-
-This separation reflects the central philosophy of the project:
-> **Language Models ≠ Educational Memory**
-
-Language models are exceptionally effective at explanation, dialogue, and guidance. Educational memory, however, benefits from explicit structure, persistence, and interpretability. NEXUS explores what becomes possible when these two responsibilities are treated as distinct components of the same system.
-
----
-
-## 10. Quick Start
+## 7. Quick Start
 
 NEXUS is actively developed and executed within Kaggle's GPU-accelerated Jupyter environment.
 
 **1. Clone the Repository**
 ```bash
-git clone  https://github.com/hankaiyu06-dudu/NEXUS-MathTutor-Agent.git
+git clone [https://github.com/your-username/NEXUS-Math-Agent.git](https://github.com/your-username/NEXUS-Math-Agent.git)
 ```
 
 **2. Kaggle Environment Setup**
-* Upload the core Jupyter Notebook (`notebook8ddf0490c5.ipynb`) to a new Kaggle Notebook.
+* Upload the core Jupyter Notebook (`nexus_core_engine.ipynb`) to a new Kaggle Notebook.
 * Upload the knowledge database (`nexus_db.json`) to the Kaggle `/kaggle/input/` or `/kaggle/working/` directory.
 
 **3. Execution**
@@ -237,14 +134,4 @@ git clone  https://github.com/hankaiyu06-dudu/NEXUS-MathTutor-Agent.git
 * *Note: The system utilizes NF4 4-bit dynamic quantization to fit large parameter language models securely within Kaggle's VRAM constraints.*
 
 ---
-
-## 11. Closing Remarks
-
-NEXUS is currently a research prototype. The project does not claim to solve tutoring, knowledge tracing, or personalized education. Instead, it explores a specific question:
-
-*Can learner understanding be represented as an explicit cognitive state that exists independently of the language model?*
-
-If the answer is yes, AI tutors may evolve beyond conversational assistants and become navigators of structured knowledge spaces. In that vision, educational resources are no longer static documents. They become living topologies of ideas.
-
-**License**
-MIT License | Dedicated to the modernization of mathematics education through interpretable cognitive-state modeling.
+*License: MIT | Dedicated to the modernization of mathematics education through interpretable cognitive-state modeling.*
