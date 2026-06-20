@@ -1,15 +1,15 @@
 # NEXUS: Separating Educational Memory from Language Models for AI Tutoring
 
 > **LLM ≠ Memory | LLM ≠ Curriculum**
-> NEXUS does not ask the language model to remember either the student or the curriculum. Both are externalized and retrieved at inference time, enabling an interpretable, long-term educational architecture beyond the context window.
+> NEXUS does not ask the language model to remember either the student learning status or the curriculum content. Both components are completely externalized and dynamically evaluate at inference time. This overcomes limits to build a highly interpretable, long-term educational architecture.
 
 ---
 
 ## 1. Vision: A New Topological Medium
 
-Walter Rudin's *Principles of Mathematical Analysis* is a masterpiece, yet for many students encountering rigorous mathematics for the first time, a static textbook can be overwhelming. A student struggling with continuity and a student struggling with compactness receive the same page, in the same order. 
+Walter Rudin's Principles of Mathematical Analysis is a masterpiece. However, it often overwhelms students facing difficult mathematical problems for the first time. The linear and static nature of a traditional textbook is simply too challenge. A student struggling with continuity and compactness is still fed the same content sequentially.
 
-Human tutors solve this naturally by remembering the learner's state and adapting the curriculum. While Large Language Models promise to scale this experience, they face a practical form of **"context amnesia"**. Over long learning trajectories, an AI gradually loses access to historical struggles, prerequisite mastery, and curriculum structure.
+Human tutors solve this naturally by remembering the learner's status and adapting the curriculum. While Large Language Models promise to scale this experience, they face a practical form of **"context amnesia"**. Over long learning trajectories, an AI gradually loses access to historical struggles, prerequisite mastery, and curriculum structure.
 
 NEXUS explores a different paradigm. Inspired by problem-solving-oriented mathematics instruction, we transform static educational content into a navigable graph of mathematical ideas. In this medium, learning becomes a process of constructing conceptual connections, guided by an AI that explicitly tracks cognitive states.
 
