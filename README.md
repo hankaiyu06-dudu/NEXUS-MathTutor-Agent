@@ -1,17 +1,17 @@
 # NEXUS: Separating Educational Memory from Language Models for AI Tutoring
 
 > **LLM ≠ Memory | LLM ≠ Curriculum**
-> NEXUS does not ask the language model to remember either the student learning status or the curriculum content. Both components are completely externalized and dynamically evaluate at inference time. This overcomes limits to build a highly interpretable, long-term educational architecture.
+NEXUS is an agent that manages knowledge graphs. It stores the knowledge graph as an adjacency matrix. The user's understanding is maintained in a separate layer. Through this architecture, NEXUS develops a long-term comprehension of a user's mathematical proficiency. This enables highly personalized problem-solving training and guidance. This approach overcomes existing limits. It builds a highly interpretable, long-term educational architecture.
 
 ---
 
 ## 1. Vision: A New Topological Medium
 
-Walter Rudin's Principles of Mathematical Analysis is a masterpiece. However, it often overwhelms students facing difficult mathematical problems for the first time. The linear and static nature of a traditional textbook is simply too challenge. A student struggling with continuity and compactness is still fed the same content sequentially.
+Walter Rudin's Principles of Mathematical Analysis is a masterpiece. However, it often overwhelms students facing difficult mathematical problems for the first time. It's too hard for freshman.The linear and static nature of a traditional textbook is simply too challenging. Students frequently encounter overly difficult problems, or repeatedly come across questions they already completely understand; while their time is wasted, they also develop a fear of mathematics or become bored.
 
-Real person tutors are able to keep the student's learning progress in mind and flexibly adjust the teaching content. Although Large Language Models (LLMs) hold the promise of achieving popularization of this personalized teaching experience, they face the practical problem of "context amnesia" in real world applications. During this process, AI will gradually forget the past difficulties of the student and their prerequisite foundational knowledge. Eventually, it will even lose its grasp of the overall curriculum structure.
+While human tutors are able to keep the student's learning progress in mind and flexibly adjust the teaching content, and Large Language Models (LLMs) hold the promise of popularizing this personalized teaching experience, they face the practical problem of 'context amnesia' in real-world applications. During this process, AI will gradually forget the past difficulties of the student and their prerequisite foundational knowledge.
 
-NEXUS explores a completely new paradigm. We drew inspiration from problem solving math instruction. Based on this, we transformed static educational content. They become a network of mathematical ideas that can navigate students to explore freely. In this new medium, learning turns into an active process. Students can use this to continuously build connections between concepts. Artificial intelligence provides guidance here. It can clearly track the cognitive states of the students.
+NEXUS explores a completely new paradigm. We drew inspiration from problem solving math instruction. Based on this, we transformed static educational content. They become a network of mathematical ideas that can guide students to explore freely. In this new medium, learning turns into an active process. Students can use this to continuously build connections between concepts. Artificial intelligence provides guidance here. It can clearly track the cognitive states of the students.
 
 ---
 
