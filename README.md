@@ -9,15 +9,15 @@
 
 Walter Rudin's Principles of Mathematical Analysis is a masterpiece. However, it often overwhelms students facing difficult mathematical problems for the first time. The linear and static nature of a traditional textbook is simply too challenge. A student struggling with continuity and compactness is still fed the same content sequentially.
 
-Human tutors solve this naturally by remembering the learner's status and adapting the curriculum. While Large Language Models promise to scale this experience, they face a practical form of **"context amnesia"**. Over long learning trajectories, an AI gradually loses access to historical struggles, prerequisite mastery, and curriculum structure.
+Real person tutors are able to keep the student's learning progress in mind and flexibly adjust the teaching content. Although Large Language Models (LLMs) hold the promise of achieving popularization of this personalized teaching experience, they face the practical problem of "context amnesia" in real world applications. During this process, AI will gradually forget the past difficulties of the student and their prerequisite foundational knowledge. Eventually, it will even lose its grasp of the overall curriculum structure.
 
-NEXUS explores a different paradigm. Inspired by problem-solving-oriented mathematics instruction, we transform static educational content into a navigable graph of mathematical ideas. In this medium, learning becomes a process of constructing conceptual connections, guided by an AI that explicitly tracks cognitive states.
+NEXUS explores a completely new paradigm. We drew inspiration from problem solving math instruction. Based on this, we transformed static educational content. They become a network of mathematical ideas that can navigate students to explore freely. In this new medium, learning turns into an active process. Students can use this to continuously build connections between concepts. Artificial intelligence provides guidance here. It can clearly track the cognitive states of the students.
 
 ---
 
 ## 2. Core Architecture: Externalized Knowledge & State
 
-Current AI tutors often rely on the LLM's internal parameters to store both pedagogical knowledge and conversational history. NEXUS strictly separates these concerns into a tripartite architecture:
+Conventional AI tutoring systems typically rely on the internal parameters of Large Language Models to store both instructional knowledge and dialogue history. NEXUS, however, enforces a strict separation of these domains through a tripartite architectural design:
 
 * **Tensor Engine (Student Memory):** Tracks dynamic mastery. *Determines WHAT the student needs.*
 * **Skill Notes Repository (Domain Knowledge):** Stores canonical solutions, prerequisite concepts, and Socratic hints. *Determines WHAT should be taught.*
@@ -43,7 +43,7 @@ Current AI tutors often rely on the LLM's internal parameters to store both peda
                  └──────────────────────┘
 ```
 
-Consequently, the language model is not required to memorize the curriculum or the student's history. It acts purely as an adaptive reasoning layer operating over externally stored educational knowledge, continually evaluating logic and feeding updates back into the cognitive state.
+Therefore, the Large Language Model is not required to memorize the curriculum content or the student's learning history. It wanders through the knowledge graph, continuously performing logical evaluations to remember the impact of the student's proficiency level. It then feeds this updated data back into the cognitive state.
 
 ---
 
